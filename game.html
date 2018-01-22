@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #ccc;
+      ;
+    }
+
+    body {
+      position: absolute;
+
+    }
+
+    span {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      background: #ccc;
+      text-align: center;
+      line-height: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="game">
+
+  </div>
+  <input type="button" value="重置" id="reset">
+  <span id="top">上</span>
+  <span id="bottom">下</span>
+  <span id='left'>左</span>
+  <span id="right">右</span>
+  <script>
+    window.onload = function () {
+      function Game() {
+        this.lists = ''
+        this.position = ''
+        this._init()
+
+      }
+      Game.prototype = {
+        constructor: Game,
+        _init: function () {
+          //获取当前容器
+          this.state = false
+          var parent = document.getElementById('game');
+          parent.innerHTML = ''
+          //容器设置
+          let WH = 300
+          parent.style.display = 'none'
+          parent.style.width = WH + 'px';
+          parent.style.height = WH + 'px';
+          //  parent.style.background = 'red';
+          parent.style.position = 'relative'
+          //创建9个div
+          //获取每个item的长度
+          let childHW = WH / 3
+          //随机生成一到9的数组
+          function random(number, arr) {
+            let set = new Set()
+
+            function _init() {
+
+              set.add(parseInt(Math.random() * 9))
+
+              if (set.size < 9) {
+                _init()
+              }
+            }
+            _init()
+            return Array.from(set)
+          }
+          let randomNum = random()
+          for (let i = 0; i < randomNum.length; i++) {
+            if (randomNum[i] === 8) {
+              randomNum[i] = ''
+              break
+            }
+          }
+          for (let i = 0; i < 9; i++) {
+            let child = document.createElement('div')
+            child.style.width = childHW + 'px';
+            child.style.height = childHW + 'px';
+            child.style.position = 'absolute'
+            child.style.left = parseInt(i % 3) * childHW + 'px'
+            child.style.top = parseInt(i / 3) * childHW + 'px'
+            child.style.background = "#ccc"
+            child.innerHTML = randomNum[i];
+            child.className = "item"
+            parent.appendChild(child)
+          }
+          parent.style.display = 'block'
+          this._getLists()
+          this.getPosition()
+          this.listener()
+          this.onkeydown()
+          // this.reset()
+          // console.log(this,this.position)
+        },
+        state: false,
+        isEnd:function () {
+        //  console.log(11) 
+        },
+        _getLists:function () {
+            this.lists = document.querySelectorAll('.item')         
+        },
+        getPosition:function(){
+          for (let i = 0; i < this.lists.length; i++) {
+            if (this.lists[i].innerHTML == '') {
+              this.position = i
+              break
+            }
+          }
+        },
+        left:function(){
+          console.log('left')
+          if (this.position % 3 != 2) {
+            console.log(this.position,11)
+            this.lists[this.position].innerHTML = this.lists[this.position + 1].innerHTML
+            this.lists[this.position + 1].innerHTML = ''
+            this.position = this.position + 1
+          }
+        },
+        right:function(){
+          console.log('right')
+          if (this.position % 3 !== 0) {
+            this.lists[this.position].innerHTML = this.lists[this.position - 1].innerHTML
+            this.lists[this.position - 1].innerHTML = ''
+            this.position = this.position - 1
+          }
+        },
+        top:function(){
+          console.log('top')
+          console.log(this )
+          if (this.position < 6) {
+            this.lists[this.position].innerHTML = this.lists[this.position + 3].innerHTML
+            this.lists[this.position + 3].innerHTML = ''
+            this.position = this.position + 3
+              console.log(game.position)
+          }
+        },
+        bottom:function(){
+          console.log('bottom')
+          if (this.position >= 3) {
+          this.lists[this.position].innerHTML = this.lists[this.position - 3].innerHTML
+          this.lists[this.position - 3].innerHTML = ''
+          this.position = this.position - 3
+          }
+        },
+        listener:function(){
+          let _this = this
+          document.getElementById('top').addEventListener('click', _this.top.bind(_this))
+          document.getElementById('bottom').addEventListener('click', _this.bottom.bind(_this))
+          document.getElementById('left').addEventListener('click', _this.left.bind(_this))
+          document.getElementById('right').addEventListener('click', _this.right.bind(_this))
+        },
+        onkeydown:function(){
+           document.onkeydown = (event)=> {
+            //左
+            if (event.keyCode == 37) {
+              this.left()
+            }
+            if (event.keyCode == 38) {
+              this.top()
+            }
+            if (event.keyCode == 39) {
+              this.right()
+            }
+            if (event.keyCode == 40) {
+              this.bottom()
+            }
+          }
+        },
+        // reset:function(){
+        //   let _this = this   
+        //   document.getElementById('reset').addEventListener('click', _this._init.bind(_this))
+          
+        // }
+      }
+      // console.log( new Game())
+      let game = new Game()
+      // console.log(game)
+      // console.log(game)
+      
+        // 重置
+      // document.getElementById('reset').addEventListener('click', function () {
+      //   console.log(game)
+      //   game._init()
+      // })
+   
+    }
+ 
+
+  </script>
+</body>
+
+</html>
